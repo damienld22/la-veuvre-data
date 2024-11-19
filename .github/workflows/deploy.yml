@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Déclenche le workflow uniquement pour la branche main
+
+permissions:
+  contents: write # Nécessaire pour publier sur GitHub Pages
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Vérifie le code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Installe Node.js (si vous utilisez des dépendances npm ou un framework JavaScript)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # Spécifiez la version Node.js
+
+      # 3. Installer les dépendances (si nécessaire)
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Construire le projet (si nécessaire)
+      - name: Build project
+        run: npm run build # Remplacez par la commande de build de votre projet
+
+      # 5. Déployer sur GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # Dossier à publier (changez selon votre configuration)
