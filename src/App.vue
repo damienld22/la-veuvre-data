@@ -2,7 +2,10 @@
   <div>
     <canvas ref="lineChart"></canvas>
   </div>
-  <p style="text-align: center">Hauteur actuelle : {{ lastPointValue }}m</p>
+  <div style="display: flex; flex-direction: column; align-items: center">
+    <p style="text-align: center">Hauteur actuelle : {{ lastPointValue }}m</p>
+    <button @click="openMoreInfos">Plus d'informations</button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -32,6 +35,11 @@ Chart.register(
 const chartInstance = ref<Chart>();
 const lineChart = ref<HTMLCanvasElement>();
 const lastPointValue = ref(0);
+
+const openMoreInfos = () => {
+  const url = "https://www.vigicrues.gouv.fr/station/J708311001";
+  window.open(url, "_blank");
+};
 
 onMounted(async () => {
   const sortedData = await fetchHeightData();
