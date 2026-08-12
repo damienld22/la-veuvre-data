@@ -4,9 +4,16 @@ on:
   push:
     branches:
       - main # Déclenche le workflow uniquement pour la branche main
+  schedule:
+    - cron: "*/10 * * * *" # Rafraîchit les données toutes les 10 minutes
+  workflow_dispatch:
 
 permissions:
   contents: write # Nécessaire pour publier sur GitHub Pages
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -27,11 +34,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. Construire le projet (si nécessaire)
+      # 4. Récupérer les données de hauteur d'eau (évite le CORS en prod : fetch côté CI, servi en statique)
+      - name: Fetch height data
+        run: |
+          mkdir -p public/data
+          curl -sSL --fail "https://www.vigicrues.gouv.fr/services/observations.json/index.php?CdStationHydro=J708311001&FormatDate=iso" -o public/data/height.json
+
+      # 5. Construire le projet (si nécessaire)
       - name: Build project
         run: npm run build # Remplacez par la commande de build de votre projet
 
-      # 5. Déployer sur GitHub Pages
+      # 6. Déployer sur GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
