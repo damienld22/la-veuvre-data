@@ -38,7 +38,7 @@ jobs:
       - name: Fetch height data
         run: |
           mkdir -p public/data
-          curl -sSL --fail "https://www.vigicrues.gouv.fr/services/observations.json/index.php?CdStationHydro=J708311001&FormatDate=iso" -o public/data/height.json
+          curl -sSL --fail --retry 3 --retry-delay 5 --max-time 30 "https://www.vigicrues.gouv.fr/services/observations.json/index.php?CdStationHydro=J708311001&FormatDate=iso" -o public/data/height.json
 
       # 5. Construire le projet (si nécessaire)
       - name: Build project
