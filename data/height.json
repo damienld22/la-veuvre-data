@@ -7,28 +7,52 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- Color theme for statusbar (Android only) -->
     <meta name="theme-color" content="#2196f3">
-    <title>Vigicrues dégradé</title>
+    <title>Vigcrues dégradé</title>
 
     <link rel="stylesheet" href="./main.css">
-</head>
+   </head>
 
 <body>
+<script>
+async function chargerTexte() {
+    try {
+        const response = await fetch('./ftp/message_vigilance.json');
+        if (!response.ok) return;
 
+        const data = await response.json();
+        if (!data || typeof data !== 'object') return;
+
+        if (typeof data.titre === 'string') {
+            document.getElementById('titre').textContent = data.titre;
+        }
+
+        if (typeof data.message === 'string') {
+            document.getElementById('texte').textContent = data.message;
+        }
+    } catch {
+        // Fichier absent ou invalide : on conserve le texte initial.
+    }
+}
+
+chargerTexte();
+</script>
 <header role="banner" class="fr-header" id="header-27">
      <img src="logo.png" alt="">
 </header>
 
 <main>
-    <div class="alert">
-        <span class="title">Attention - Maintenance</span>
-        L'accès au site vigicrues.gouv.fr est temporairement dégradé le temps d'une action de maintenance urgente.
+   
+        <div class="alert">
+        <span class="title" id="titre">Attention </span>
+       <span id="texte"> message de maintenance.</span>
     </div>
+
     <div class="mapcont">
         <div class="bulletin">
-            <a href="bull_france.pdf">Accéder au bulletin d'information national</a>
+            <a href="ftp/bull_france.pdf">Accéder au bulletin d'information national</a>
         </div>
         <div class="map">
-            <img src="map.png" alt="">
+            <img src="ftp/vig_app_niv1.png" alt="Carte de la vigilance aux crues">
         </div>
     </div>
 </main>
